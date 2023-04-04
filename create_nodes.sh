@@ -142,8 +142,6 @@ tls-san:
   - ${node_ips[cp-1]}
   - ${node_ips[lb-cp]}
   - ${node_ips[lb-wrkr]}
-
-
 EOF
 
 ## Create the Control-Plane HAProxy config file
