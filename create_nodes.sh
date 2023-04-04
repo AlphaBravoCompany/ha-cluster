@@ -213,6 +213,9 @@ fi
 ## Run the HAProxy UI
 cat << EOF
 
+Please review the file, rke2-install.txt, for more inforamtion on installing RKE2 with this infrastructure.
+less rke2-install.txt
+
 To run the UI for the load balancer, log into lb-cp or lb-wrkr:
 sudo multipass shell lb-cp
 sudo hatop -s /var/run/haproxy/haproxy.sock
