@@ -4,9 +4,9 @@ provider "aws" {
   region     = var.region
 }
 
-resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+resource "aws_security_group" "ssh_access" {
+  name        = "baremetal_ssh_access"
+  description = "Allow SSH inbound traffic for Baremetal server nodes"
 
   ingress {
     from_port   = 22
@@ -14,27 +14,28 @@ resource "aws_security_group" "allow_ssh" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "Baremetal Instance"
+  }
 }
 
 resource "aws_instance" "baremetal_instance" {
-  ami           = var.ami
-  instance_type = var.node_type
+  ami           = var.ami_id
+  instance_type = var.instance_type
   key_name      = var.ssh_key
-  count         = var.quantity_of_nodes
+  count         = var.instance_count
+  availability_zone = var.zone
 
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
-
-  placement {
-    availability_zone = var.zone
-  }
+  vpc_security_group_ids = [aws_security_group.ssh_access.id]
 
   tags = {
-    Name = "baremetal_instance"
+    Name = "Baremetal Instance"
   }
 }
 
 resource "local_file" "inventory" {
   content  = join("\n", aws_instance.baremetal_instance.*.public_ip)
-  filename = "${path.module}/inventory.txt"
+  filename = "../ansible/inventory.txt"
   depends_on = [aws_instance.baremetal_instance]
 }

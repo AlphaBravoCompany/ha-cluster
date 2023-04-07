@@ -1,2 +1,7 @@
 haproxy*.cfg
 *.tfvars
+*.tfplan
+*.lock.hcl
+.terraform
+*.tfstate
+inventory.*
