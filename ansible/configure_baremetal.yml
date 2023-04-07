@@ -2,6 +2,7 @@
 - name: Deploy Git Repository and Run Script
   hosts: all
   gather_facts: no
+  become: yes
   tasks:
     - name: Install Required Packages
       ansible.builtin.package:
@@ -9,31 +10,55 @@
         state: present
       become: yes
 
+    - name: Get kubectl version from stable.txt
+      uri:
+        url: https://dl.k8s.io/release/stable.txt
+        return_content: yes
+      register: kubectl_version_result
+
+    - name: Set kubectl_version variable
+      set_fact:
+        kubectl_version: "{{ kubectl_version_result.content | trim }}"
+
     - name: Download and Install kubectl
       get_url:
-        url: "https://dl.k8s.io/release/$(curl -L -sS https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
         dest: "/usr/local/bin/kubectl"
         mode: "0755"
-        version: "ansible-updates"
+
+    - name: Install Multipass on Ubuntu
+      ansible.builtin.command:
+        cmd: snap install multipass --classic
+
+    - name: Check if /tmp/ha-cluster directory exists
+      stat:
+        path: /tmp/ha-cluster
+      register: directory_status
+
+    - name: Remove /tmp/ha-cluster directory if it exists
+      file:
+        path: /tmp/ha-cluster
+        state: absent
+      when: directory_status.stat.exists and directory_status.stat.isdir
 
     - name: Clone Git repository
       ansible.builtin.git:
         repo: 'https://github.com/AlphaBravoCompany/ha-cluster.git'
         dest: '/tmp/ha-cluster'
+        version: "ansible-updates"
 
-    - name: Set create_nodes.sh as executable
-      ansible.builtin.file:
-        path: /tmp/ha-cluster/create_nodes.sh
-        mode: 'u+x'
+    - name: Find all files in the Scripts directory
+      find:
+        paths: "/tmp/ha-cluster/scripts"
+        file_type: file
+      register: files_in_directory
 
-    - name: Set destroy_nodes.sh as executable
-      ansible.builtin.file:
-        path: /tmp/ha-cluster/destroy_nodes.sh
-        mode: 'u+x'
+    - name: Set all files in the Scripts directory to executable
+      file:
+        path: "{{ item.path }}"
+        mode: "u+x"
+      loop: "{{ files_in_directory.files }}"
 
-    # - name: Execute the create_nodes.sh script
-    #   ansible.builtin.shell: '/bin/bash /tmp/ha-cluster/create_nodes.sh'
-    #   become: yes
     - name: Execute scripts in /tmp/ha-cluster
       ansible.builtin.shell: "./{{ item }}"
       args:
