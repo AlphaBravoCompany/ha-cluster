@@ -32,3 +32,9 @@ resource "aws_instance" "baremetal_instance" {
     Name = "baremetal_instance"
   }
 }
+
+resource "local_file" "inventory" {
+  content  = join("\n", aws_instance.baremetal_instance.*.public_ip)
+  filename = "${path.module}/inventory.txt"
+  depends_on = [aws_instance.baremetal_instance]
+}

@@ -1,0 +1,29 @@
+---
+- name: Deploy Git Repository and Run Script
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Install required packages
+      ansible.builtin.package:
+        name: ['git', 'sudo']
+        state: present
+      become: yes
+
+    - name: Clone Git repository
+      ansible.builtin.git:
+        repo: 'https://github.com/AlphaBravoCompany/ha-cluster'
+        dest: '/tmp/ha-cluster'
+
+    - name: Set create_nodes.sh as executable
+      ansible.builtin.file:
+        path: /tmp/ha-cluster/create_nodes.sh
+        mode: 'u+x'
+
+    - name: Set destroy_nodes.sh as executable
+      ansible.builtin.file:
+        path: /tmp/ha-cluster/destroy_nodes.sh
+        mode: 'u+x'
+
+    - name: Execute the create_nodes.sh script
+      ansible.builtin.shell: '/bin/bash /tmp/ha-cluster/create_nodes.sh'
+      become: yes
