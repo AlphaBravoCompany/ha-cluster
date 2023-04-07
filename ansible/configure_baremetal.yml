@@ -4,31 +4,31 @@
   gather_facts: no
   become: yes
   tasks:
-    # - name: Install Required Packages
-    #   ansible.builtin.package:
-    #     name: ['git', 'sudo', 'jq']
-    #     state: present
-    #   become: yes
+    - name: Install Required Packages
+      ansible.builtin.package:
+        name: ['git', 'sudo', 'jq']
+        state: present
+      become: yes
 
-    # - name: Get kubectl version from stable.txt
-    #   uri:
-    #     url: https://dl.k8s.io/release/stable.txt
-    #     return_content: yes
-    #   register: kubectl_version_result
+    - name: Get kubectl version from stable.txt
+      uri:
+        url: https://dl.k8s.io/release/stable.txt
+        return_content: yes
+      register: kubectl_version_result
 
-    # - name: Set kubectl_version variable
-    #   set_fact:
-    #     kubectl_version: "{{ kubectl_version_result.content | trim }}"
+    - name: Set kubectl_version variable
+      set_fact:
+        kubectl_version: "{{ kubectl_version_result.content | trim }}"
 
-    # - name: Download and Install kubectl
-    #   get_url:
-    #     url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
-    #     dest: "/usr/local/bin/kubectl"
-    #     mode: "0755"
+    - name: Download and Install kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+        dest: "/usr/local/bin/kubectl"
+        mode: "0755"
 
-    # - name: Install Multipass on Ubuntu
-    #   ansible.builtin.command:
-    #     cmd: snap install multipass --classic
+    - name: Install Multipass on Ubuntu
+      ansible.builtin.command:
+        cmd: snap install multipass --classic
 
     - name: Check if /tmp/ha-cluster directory exists
       stat:
@@ -45,7 +45,7 @@
       ansible.builtin.git:
         repo: 'https://github.com/AlphaBravoCompany/ha-cluster.git'
         dest: '/home/ubuntu/ha-cluster'
-        version: "ansible-updates"
+        # version: "ansible-updates"
 
     - name: Find all files in the Scripts directory
       find:
@@ -64,14 +64,14 @@
       args:
         chdir: /home/ubuntu/ha-cluster/scripts
       loop:
-        # - 01-bastion.sh
-        # - 02-lb-cp.sh
-        # - 03-lb-wrkr.sh
-        # - 04-nodes-cp.sh
-        # - 05-nodes-wrkr.sh
+        - 01-bastion.sh
+        - 02-lb-cp.sh
+        - 03-lb-wrkr.sh
+        - 04-nodes-cp.sh
+        - 05-nodes-wrkr.sh
         - 06-config.sh
-        # - 07-lb-cp-config.sh
-        # - 08-lb-wrkr-config.sh
+        - 07-lb-cp-config.sh
+        - 08-lb-wrkr-config.sh
 
     - name: Copy the rke2-install.txt to the user's home directory
       ansible.builtin.command: cp /home/ubuntu/ha-cluster/scripts/rke2-install.txt /home/ubuntu/rke2-install.txt

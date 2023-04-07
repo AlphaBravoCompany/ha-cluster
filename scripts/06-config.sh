@@ -244,6 +244,19 @@ sudo /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml 
 8. Repeat steps 1-7 for the remaining worker nodes.
 -----
 
+9. Once the worker nodes have successfully deployed, copy the K8s config to the Bastion.
+-----
+exit (to the Bastion node)
+mkdir ~/.kube
+chmod 755 ~/.kube
+scp cp-1:/etc/rancher/rke2/rke2.yaml ~/.kube/config
+chmod 600 ~/.kube/config
+
+10. Run kubectl from the Bastion to control the K8s cluster
+-----
+kubectl get nodes
+kubectl get pods -A
+
 
 EOF
 
