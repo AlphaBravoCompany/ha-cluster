@@ -13,3 +13,7 @@ variable "ami_id" {}
 variable "region" {}
 
 variable "zone" {}
+
+variable "volume_size" {}
+
+variable "volume_type" {}

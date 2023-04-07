@@ -37,8 +37,8 @@ resource "aws_instance" "baremetal_instance" {
   vpc_security_group_ids = [aws_security_group.ssh_access.id]
 
   root_block_device {
-    volume_size           = "250"
-    volume_type           = "gp3"
+    volume_size           = var.volume_size
+    volume_type           = var.volume_type
     delete_on_termination = true
   }
 
