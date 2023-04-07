@@ -34,6 +34,9 @@ sudo multipass shell lb-cp
 -----
 sudo hatop -s /var/run/haproxy/haproxy.sock
 
+3. Watch this interface to see the Control-Plane nodes come online.
+-----
+
 
 
 ## =====
