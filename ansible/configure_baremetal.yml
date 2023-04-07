@@ -32,24 +32,24 @@
 
     - name: Check if /tmp/ha-cluster directory exists
       stat:
-        path: /tmp/ha-cluster
+        path: /home/ubuntu/ha-cluster
       register: directory_status
 
     - name: Remove /tmp/ha-cluster directory if it exists
       file:
-        path: /tmp/ha-cluster
+        path: /home/ubuntu/ha-cluster
         state: absent
       when: directory_status.stat.exists and directory_status.stat.isdir
 
     - name: Clone Git repository
       ansible.builtin.git:
         repo: 'https://github.com/AlphaBravoCompany/ha-cluster.git'
-        dest: '/tmp/ha-cluster'
+        dest: '/home/ubuntu/ha-cluster'
         version: "ansible-updates"
 
     - name: Find all files in the Scripts directory
       find:
-        paths: "/tmp/ha-cluster/scripts"
+        paths: "/home/ubuntu/ha-cluster/scripts"
         file_type: file
       register: files_in_directory
 
@@ -59,10 +59,10 @@
         mode: "u+x"
       loop: "{{ files_in_directory.files }}"
 
-    - name: Execute scripts in /tmp/ha-cluster
+    - name: Execute scripts in /home/ubuntu/ha-cluster
       ansible.builtin.shell: "./{{ item }}"
       args:
-        chdir: /tmp/ha-cluster/scripts
+        chdir: /home/ubuntu/ha-cluster/scripts
       loop:
         - 01-bastion.sh
         - 02-lb-cp.sh
