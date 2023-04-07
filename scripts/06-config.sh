@@ -16,7 +16,7 @@ done
 cat << EOF > rke2-install.txt
 
 1. Copy the contents of this file to your local machine.
-2. Open three terminals.
+2. Open two terminals.
 3. Follow the instructions below.
 
 ## =====
