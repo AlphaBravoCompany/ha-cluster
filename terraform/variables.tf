@@ -2,13 +2,13 @@ variable "aws_access_key" {}
 
 variable "aws_secret_key" {}
 
-variable "node_type" {}
+variable "instance_type" {}
 
 variable "ssh_key" {}
 
-variable "quantity_of_nodes" {}
+variable "instance_count" {}
 
-variable "ami" {}
+variable "ami_id" {}
 
 variable "region" {}
 
