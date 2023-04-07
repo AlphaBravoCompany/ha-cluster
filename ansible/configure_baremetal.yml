@@ -3,15 +3,22 @@
   hosts: all
   gather_facts: no
   tasks:
-    - name: Install required packages
+    - name: Install Required Packages
       ansible.builtin.package:
-        name: ['git', 'sudo']
+        name: ['git', 'sudo', 'jq']
         state: present
       become: yes
 
+    - name: Download and Install kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/$(curl -L -sS https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        dest: "/usr/local/bin/kubectl"
+        mode: "0755"
+        version: "ansible-updates"
+
     - name: Clone Git repository
       ansible.builtin.git:
-        repo: 'https://github.com/AlphaBravoCompany/ha-cluster'
+        repo: 'https://github.com/AlphaBravoCompany/ha-cluster.git'
         dest: '/tmp/ha-cluster'
 
     - name: Set create_nodes.sh as executable
@@ -24,6 +31,19 @@
         path: /tmp/ha-cluster/destroy_nodes.sh
         mode: 'u+x'
 
-    - name: Execute the create_nodes.sh script
-      ansible.builtin.shell: '/bin/bash /tmp/ha-cluster/create_nodes.sh'
-      become: yes
+    # - name: Execute the create_nodes.sh script
+    #   ansible.builtin.shell: '/bin/bash /tmp/ha-cluster/create_nodes.sh'
+    #   become: yes
+    - name: Execute scripts in /tmp/ha-cluster
+      ansible.builtin.shell: "./{{ item }}"
+      args:
+        chdir: /tmp/ha-cluster/scripts
+      loop:
+        - 01-bastion.sh
+        - 02-lb-cp.sh
+        - 03-lb-wrkr.sh
+        - 04-nodes-cp.sh
+        - 05-nodes-wrkr.sh
+        - 06-config.sh
+        - 07-lb-cp-config.sh
+        - 08-lb-wrkr-config.sh

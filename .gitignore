@@ -3,5 +3,5 @@ haproxy*.cfg
 *.tfplan
 *.lock.hcl
 .terraform
-*.tfstate
+*.tfstate*
 inventory.*
