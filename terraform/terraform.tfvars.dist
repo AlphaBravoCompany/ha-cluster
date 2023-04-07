@@ -7,3 +7,5 @@ instance_count      = 1
 ami_id              = "ami-0a695f0d95cefc163"
 region              = "us-east-2"
 zone                = "us-east-2a"
+volume_size         = "250"
+volume_type         = "gp3"

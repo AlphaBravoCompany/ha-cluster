@@ -251,6 +251,7 @@ mkdir ~/.kube
 chmod 755 ~/.kube
 scp cp-1:/etc/rancher/rke2/rke2.yaml ~/.kube/config
 chmod 600 ~/.kube/config
+NODE_IP="${node_ips[lb-cp]}" sed -i "s/127\.0\.0\.1/${NODE_IP}/g" ~/kube/config
 
 10. Run kubectl from the Bastion to control the K8s cluster
 -----
