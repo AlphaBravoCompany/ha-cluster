@@ -23,7 +23,7 @@ resource "aws_security_group" "ssh_access" {
   }
 
   tags = {
-    Name                  = "Baremetal Instance"
+    Name                  = "Baremetal Instances"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_instance" "baremetal_instance" {
   }
 
   tags = {
-    Name                  = "Baremetal Instance"
+    Name                  = "baremetal-0${count.index + 1}"
   }
 }
 
