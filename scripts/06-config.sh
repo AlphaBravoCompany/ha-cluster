@@ -34,9 +34,8 @@ cat << EOF > rke2-install.txt
 1. First, we need to setup the bastion with the proper keys and load kubectl. Run the following commands from terminal #1.
 ---
 sudo multipass transfer /var/snap/multipass/common/data/multipassd/ssh-keys/id_rsa bastion:/home/ubuntu/.ssh/id_rsa
-sudo multipass transfer /usr/local/bin/kubectl bastion:/home/ubuntu/kubectl
-sudo multipass exec bastion -- chmod +x /tmp/bastion.sh
-sudo multipass exec bastion -- sudo bash /tmp/bastion.sh
+sudo multipass exec bastion -- curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo multipass exec bastion -- sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 2. From terminal #1, login to the Control-Place Load Balancer
 -----
