@@ -72,6 +72,7 @@
         - 06-config.sh
         - 07-lb-cp-config.sh
         - 08-lb-wrkr-config.sh
+        - 09-bastion-config.sh
 
     - name: Copy the rke2-install.txt to the user's home directory
       ansible.builtin.command: cp /home/ubuntu/ha-cluster/scripts/rke2-install.txt /home/ubuntu/rke2-install.txt
