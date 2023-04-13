@@ -31,15 +31,22 @@ cat << EOF > rke2-install.txt
 ## We will also be able to view ingress traffic through the LB to the nodes
 
 
-1. From terminal #1, login to the Control-Place Load Balancer
+1. First, we need to setup the bastion with the proper keys and load kubectl. Run the following commands from terminal #1.
+---
+sudo multipass transfer /var/snap/multipass/common/data/multipassd/ssh-keys/id_rsa bastion:/home/ubuntu/.ssh/id_rsa
+sudo multipass transfer /usr/local/bin/kubectl bastion:/home/ubuntu/kubectl
+sudo multipass exec bastion -- chmod +x /tmp/bastion.sh
+sudo multipass exec bastion -- sudo bash /tmp/bastion.sh
+
+2. From terminal #1, login to the Control-Place Load Balancer
 -----
 sudo multipass shell lb-cp
 
-2. Run the command to view the CLI UI for HAproxy.
+3. Run the command to view the CLI UI for HAproxy.
 -----
 sudo hatop -s /var/run/haproxy/haproxy.sock
 
-3. Watch this interface to see the Control-Plane nodes come online.
+4. Watch this interface to see the Control-Plane nodes come online.
 -----
 
 
